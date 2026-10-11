@@ -5,6 +5,7 @@ import os
 
 PORT = int(os.environ.get('PORT', 8080))
 
+
 class Proxy(http.server.BaseHTTPRequestHandler):
     def _cors(self):
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -70,5 +71,6 @@ class Proxy(http.server.BaseHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
-print(f'Proxy running on port {PORT}')
+
+print('Proxy running on port', PORT)
 http.server.HTTPServer(('0.0.0.0', PORT), Proxy).serve_forever()
