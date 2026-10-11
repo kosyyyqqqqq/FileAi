@@ -1,9 +1,9 @@
 import http.server
 import urllib.request
 import json
-import sys
+import os
 
-PORT = 8080
+PORT = int(os.environ.get('PORT', 8080))
 
 class Proxy(http.server.BaseHTTPRequestHandler):
     def _cors(self):
@@ -15,6 +15,13 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self._cors()
         self.end_headers()
+
+    def do_GET(self):
+        self.send_response(200)
+        self._cors()
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(b'{"status":"ok"}')
 
     def do_POST(self):
         length = int(self.headers.get('Content-Length', 0))
@@ -63,6 +70,5 @@ class Proxy(http.server.BaseHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
-print(f'Proxy running on http://localhost:{PORT}')
-print('Keep this window open. Press Ctrl+C to stop.')
-http.server.HTTPServer(('localhost', PORT), Proxy).serve_forever()
+print(f'Proxy running on port {PORT}')
+http.server.HTTPServer(('0.0.0.0', PORT), Proxy).serve_forever()
